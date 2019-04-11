@@ -6,6 +6,7 @@ var bodyParser = require("body-parser");
 var todo_1 = require("./models/todo");
 // import {User} from './models/user';
 var app = express();
+exports.app = app;
 app.use(bodyParser.json());
 // We set up our POST routes
 app.post('/todos', function (req, res) {
