@@ -1,7 +1,7 @@
-import {mongoose} from '../db/mongoose';
+import mongoose from '../db/mongoose';
 import { Schema } from 'mongoose';
 
-const Todo = mongoose.model('Todo',new Schema( {
+export const Todo = mongoose.model('Todo',new Schema( {
     text: {
         type: String, 
         required: true,
@@ -17,5 +17,3 @@ const Todo = mongoose.model('Todo',new Schema( {
         default: null
     }
 }));
-
-export {Todo};

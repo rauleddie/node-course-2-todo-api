@@ -19,6 +19,14 @@ app.post('/todos', function (req, res) {
         res.status(400).send(e);
     });
 });
+// We set up our GET routes
+app.get('/todos', function (req, res) {
+    todo_1.Todo.find().then(function (todos) {
+        res.send({ todos: todos });
+    }).catch(function (e) {
+        res.status(400).send(e);
+    });
+});
 app.listen(3000, function () {
     console.log('Started on port 3000');
 });

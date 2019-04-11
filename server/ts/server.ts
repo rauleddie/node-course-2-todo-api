@@ -3,7 +3,7 @@ import express = require('express');
 import bodyParser = require('body-parser');
 
 // Database related dependencies
-import {mongoose} from './db/mongoose';
+import mongoose from './db/mongoose';
 import {Todo} from './models/todo';
 // import {User} from './models/user';
 
@@ -22,6 +22,15 @@ app.post('/todos', (req: express.Request, res: express.Response) => {
     }).catch((e: mongoose.Error) => {
         res.status(400).send(e);
     })
+});
+
+// We set up our GET routes
+app.get('/todos', (req: express.Request, res: express.Response) => {
+    Todo.find().then((todos: any) => {
+        res.send({todos});
+    }).catch((e: mongoose.Error) => {
+        res.status(400).send(e);
+    });
 });
 
 app.listen(3000, () => {
