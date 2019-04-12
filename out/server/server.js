@@ -9,6 +9,7 @@ var todo_1 = require("./models/todo");
 var app = express();
 exports.app = app;
 app.use(bodyParser.json());
+var port = process.env.PORT || 3000;
 // We set up our POST routes
 app.post('/todos', function (req, res) {
     var todo = new todo_1.Todo({
@@ -45,6 +46,6 @@ app.get('/todos/:id', function (req, res) {
             .send(e);
     });
 });
-app.listen(3000, function () {
+app.listen(port, function () {
     console.log('Started on port 3000');
 });

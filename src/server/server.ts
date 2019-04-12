@@ -10,6 +10,7 @@ import {Todo} from './models/todo';
 
 const app: express.Application = express();
 app.use(bodyParser.json());
+const port = process.env.PORT || 3000;
 
 // We set up our POST routes
 
@@ -52,7 +53,7 @@ app.get('/todos/:id', (req: express.Request, res: express.Response) => {
     })
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log('Started on port 3000');
 });
 
