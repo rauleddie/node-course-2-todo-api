@@ -50,7 +50,24 @@ app.get('/todos/:id', (req: express.Request, res: express.Response) => {
     }).catch( (e: Error) => {
         res.status(400)
             .send(e);
-    })
+    });
+});
+
+// We set up our DELETE routes
+app.delete('/todos/:id', (req: express.Request, res: express.Response) => {
+    const {id} = req.params;
+    if(!ObjectID.isValid(id)) {
+        return res.status(404)
+            .send();
+    }
+    Todo.findByIdAndRemove(id).then( (todo: any) => {
+        if(!todo) {
+            return res.status(404).send();
+        }
+        res.send(todo);
+    }).catch( (e: Error) => {
+        res.status(400)
+    });
 });
 
 app.listen(port, () => {
