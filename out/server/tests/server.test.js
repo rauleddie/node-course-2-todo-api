@@ -99,3 +99,37 @@ describe('GET /todos/:id', function () {
             .end(done);
     });
 });
+describe('DELETE /todos/:id', function () {
+    it('should remove a todo', function (done) {
+        var id = todos[0]._id.toHexString();
+        supertest_1.default(server_1.app)
+            .delete("/todos/" + id)
+            .expect(200)
+            .expect(function (res) {
+            expect_1.default(res.body.todo._id).toBe(id);
+        })
+            .end(function (err, res) {
+            if (err) {
+                return done(err);
+            }
+            todo_1.Todo.findById(id).then(function (todo) {
+                expect_1.default(todo).toBeFalsy();
+                done();
+            }).catch(function (e) { return done(e); });
+        });
+    });
+    it('should return 404 if todo not found', function (done) {
+        var id = new mongodb_1.ObjectID();
+        supertest_1.default(server_1.app)
+            .delete("/todos/" + id)
+            .expect(404)
+            .end(done);
+    });
+    it('should return 404 if object id is invalid', function (done) {
+        var fakeId = '123';
+        supertest_1.default(server_1.app)
+            .delete("/todos/" + fakeId)
+            .expect(404)
+            .end(done);
+    });
+});
