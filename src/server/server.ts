@@ -39,13 +39,13 @@ app.get('/todos/:id', (req: express.Request, res: express.Response) => {
     const {id} = req.params;
     if(!ObjectID.isValid(id)) {
         return res.status(404)
-            .send('Invalid Id');
+            .send();
     }
     Todo.findById(id).then( (todo: any) => {
         if(!todo) {
-            return res.status(404).send('Todo not found');
+            return res.status(404).send();
         }
-        res.send(todo);
+        res.send({todo});
     }).catch( (e: Error) => {
         res.status(400)
             .send(e);

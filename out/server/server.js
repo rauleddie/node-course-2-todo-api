@@ -33,13 +33,13 @@ app.get('/todos/:id', function (req, res) {
     var id = req.params.id;
     if (!mongodb_1.ObjectID.isValid(id)) {
         return res.status(404)
-            .send('Invalid Id');
+            .send();
     }
     todo_1.Todo.findById(id).then(function (todo) {
         if (!todo) {
-            return res.status(404).send('Todo not found');
+            return res.status(404).send();
         }
-        res.send(todo);
+        res.send({ todo: todo });
     }).catch(function (e) {
         res.status(400)
             .send(e);

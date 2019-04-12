@@ -5,14 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var expect_1 = __importDefault(require("expect"));
 var supertest_1 = __importDefault(require("supertest"));
+var mongodb_1 = require("mongodb");
 var server_1 = require("../server");
 var todo_1 = require("../models/todo");
 // Dummy todo data
 var todos = [
     {
+        _id: new mongodb_1.ObjectID(),
         text: 'First test todo'
     },
     {
+        _id: new mongodb_1.ObjectID(),
         text: 'Second test todo'
     }
 ];
@@ -68,6 +71,31 @@ describe('GET /todos', function () {
             .expect(function (res) {
             expect_1.default(res.body.todos.length).toBe(2);
         })
+            .end(done);
+    });
+});
+describe('GET /todos/:id', function () {
+    it('should return a todo doc', function (done) {
+        supertest_1.default(server_1.app)
+            .get("/todos/" + todos[0]._id.toHexString())
+            .expect(200)
+            .expect(function (res) {
+            expect_1.default(res.body.todo.text).toBe(todos[0].text);
+        })
+            .end(done);
+    });
+    it('should return 404 if not found', function (done) {
+        var id = new mongodb_1.ObjectID().toHexString();
+        supertest_1.default(server_1.app)
+            .get("/todos/" + id)
+            .expect(404)
+            .end(done);
+    });
+    it('should return 404 for non-object ids', function (done) {
+        var fakeId = '123';
+        supertest_1.default(server_1.app)
+            .get("/todos/" + fakeId)
+            .expect(404)
             .end(done);
     });
 });

@@ -1,5 +1,6 @@
 import expect from 'expect';
 import request from 'supertest';
+import {ObjectID} from 'mongodb';
 
 import {app} from '../server';
 import {Todo} from '../models/todo';
@@ -7,9 +8,11 @@ import {Todo} from '../models/todo';
 // Dummy todo data
 const todos = [
     {
+        _id: new ObjectID(),
         text: 'First test todo'
     },
     {
+        _id: new ObjectID(),
         text: 'Second test todo'
     }
 ];
@@ -71,5 +74,33 @@ describe('GET /todos', () => {
             expect(res.body.todos.length).toBe(2);
         })
         .end(done);
-    })
+    });
+});
+
+describe('GET /todos/:id', () => {
+    it('should return a todo doc', (done: MochaDone) => {
+        request(app)
+            .get(`/todos/${todos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect( (res: any) => {
+                expect(res.body.todo.text).toBe(todos[0].text);
+            })
+            .end(done);
+    });
+
+    it('should return 404 if not found', (done: MochaDone) => {
+        const id = new ObjectID().toHexString();
+        request(app)
+            .get(`/todos/${id}`)
+            .expect(404)
+            .end(done);
+    });
+
+    it('should return 404 for non-object ids', (done: MochaDone) => {
+        const fakeId = '123';
+        request(app)
+            .get(`/todos/${fakeId}`)
+            .expect(404)
+            .end(done);
+    });
 });
