@@ -21,7 +21,7 @@ app.post('/todos', (req: express.Request, res: express.Response) => {
         text: req.body.text
     });
 
-    todo.save().then( (doc: mongoose.Document) => {
+    todo.save().then( (doc: any) => {
         res.send(doc);
     }).catch((e: mongoose.Error) => {
         res.status(400).send(e);
@@ -93,7 +93,7 @@ app.patch('/todos/:id', (req: express.Request, res: express.Response) => {
             return res.status(404).send();
         }
         res.send({todo});
-    }).catch( (e: MongoError) => {
+    }).catch( (e: mongoose.Error) => {
         res.status(400).send();
     });
 });

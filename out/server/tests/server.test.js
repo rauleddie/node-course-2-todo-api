@@ -16,7 +16,9 @@ var todos = [
     },
     {
         _id: new mongodb_1.ObjectID(),
-        text: 'Second test todo'
+        text: 'Second test todo',
+        completed: true,
+        completedAt: 333
     }
 ];
 beforeEach(function (done) {
@@ -130,6 +132,40 @@ describe('DELETE /todos/:id', function () {
         supertest_1.default(server_1.app)
             .delete("/todos/" + fakeId)
             .expect(404)
+            .end(done);
+    });
+});
+describe('Patch /todos/:id', function () {
+    it('should update the todo', function (done) {
+        var id = todos[0]._id.toHexString(), updateTxt = "Updates from testing";
+        supertest_1.default(server_1.app)
+            .patch("/todos/" + id)
+            .send({
+            completed: true,
+            text: updateTxt
+        })
+            .expect(200)
+            .expect(function (res) {
+            expect_1.default(res.body.todo.completed).toBe(true);
+            expect_1.default(res.body.todo.text).toBe(updateTxt);
+            expect_1.default(typeof res.body.todo.completedAt).toBe('number');
+        })
+            .end(done);
+    });
+    it('should clear completedAt when todo is not complete', function (done) {
+        var id = todos[1]._id.toHexString(), updateTxt = 'Updates from testing';
+        supertest_1.default(server_1.app)
+            .patch("/todos/" + id)
+            .send({
+            completed: false,
+            text: updateTxt
+        })
+            .expect(200)
+            .expect(function (res) {
+            expect_1.default(res.body.todo.completed).toBe(false);
+            expect_1.default(res.body.todo.text).toBe(updateTxt);
+            expect_1.default(res.body.todo.completedAt).toBe(null);
+        })
             .end(done);
     });
 });
