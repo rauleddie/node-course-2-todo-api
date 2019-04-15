@@ -17,3 +17,9 @@ export const Todo = mongoose.model('Todo',new Schema( {
         default: null
     }
 }));
+
+export type Todotype = {
+    text: string,
+    completed: boolean,
+    completedAt?: number | null
+}

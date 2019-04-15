@@ -1,11 +1,13 @@
 // Server dependencies
 import express = require('express');
 import bodyParser = require('body-parser');
-import {ObjectID} from 'mongodb';
+import _ = require('lodash');
+import {ObjectID, MongoError} from 'mongodb';
 
 // Database related dependencies
 import mongoose from './db/mongoose';
-import {Todo} from './models/todo';
+import {Todo, Todotype} from './models/todo';
+import { RSA_NO_PADDING } from 'constants';
 // import {User} from './models/user';
 
 const app: express.Application = express();
@@ -67,6 +69,32 @@ app.delete('/todos/:id', (req: express.Request, res: express.Response) => {
         res.send({todo});
     }).catch( (e: Error) => {
         res.status(400)
+    });
+});
+
+// We set up our PATCH routes
+app.patch('/todos/:id', (req: express.Request, res: express.Response) => {
+    const {id} = req.params;
+    const body: Todotype = _.pick(req.body, ['text', 'completed']);
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    // Check if the todo is completed.
+    if(_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    }
+    else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+    // We make the query to the database
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then( (todo: any) => {
+        if(!todo) {
+            return res.status(404).send();
+        }
+        res.send({todo});
+    }).catch( (e: MongoError) => {
+        res.status(400).send();
     });
 });
 
