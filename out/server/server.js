@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// Load Server Config
+require('./config/config');
 // Server dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
 var _ = require("lodash");
 var mongodb_1 = require("mongodb");
 var todo_1 = require("./models/todo");
-// import {User} from './models/user';
+// Start up our server app.
 var app = express();
 exports.app = app;
 app.use(bodyParser.json());
-var port = process.env.PORT || 3000;
+var port = process.env.PORT;
 // We set up our POST routes
 app.post('/todos', function (req, res) {
     var todo = new todo_1.Todo({

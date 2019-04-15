@@ -1,18 +1,21 @@
+// Load Server Config
+require('./config/config');
+
 // Server dependencies
 import express = require('express');
 import bodyParser = require('body-parser');
 import _ = require('lodash');
-import {ObjectID, MongoError} from 'mongodb';
+import {ObjectID} from 'mongodb';
 
 // Database related dependencies
 import mongoose from './db/mongoose';
 import {Todo, Todotype} from './models/todo';
-import { RSA_NO_PADDING } from 'constants';
-// import {User} from './models/user';
 
+// Start up our server app.
 const app: express.Application = express();
 app.use(bodyParser.json());
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
+
 
 // We set up our POST routes
 
